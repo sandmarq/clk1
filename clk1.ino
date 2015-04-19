@@ -169,6 +169,7 @@ void loop()
 
   if(timerLcdLight == 0){
     lcd.setBacklight(LOW);
+    lcd.noDisplay();
   }
 
   delay (100);
@@ -306,6 +307,7 @@ void displayMatrix(){
 // Si ecran LCD off allume et reset timer
 void chkBackOffTurnOn(){
   if (timerLcdLight == 0){
+    lcd.display();
     lcd.setBacklight(HIGH);
   }
   timerLcdLight=120;
