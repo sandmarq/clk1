@@ -1,3 +1,5 @@
+// Librairie du projet
+// Project libraries
 #include <SPI.h>
 #include <dht11.h>
 #include <Timezone.h>
@@ -8,22 +10,26 @@
 #include <LiquidCrystal_I2C.h>
 #include "LedControl.h"
 
-// Set pins:  CE, IO,CLK
+// Init Broche Horloge
+// Set pins clock:  CE, IO,CLK
 DS1302RTC RTC(13, 12, 11);
 
 // Optional connection for RTC module
+// Connection obtionnel du module RTC
 //#define DS1302_GND_PIN 33
 //#define DS1302_VCC_PIN 35
 
-//DEFINE Button
+//Definition des boutons
+//DEFINE Buttons
 #define PIN_SET_MODE_BUTTON 2
 #define PIN_ADD_BUTTON 4
 #define PIN_SUB_BUTTON 7
 #define PIN_LCD_LIGHT 8
 #define DEBUG 1
 
+// Definitin du LCD
 //DEFINE LCD
-#define I2C_ADDR    0x27 // <<----- Add your address here.  Find it from I2C Scanner
+#define I2C_ADDR    0x27 // <<----- Ajouter adresse ici. Decouverte avec I2C Scanner / Add your address here.  Find it from I2C Scanner
 #define BACKLIGHT_PIN     3
 #define En_pin  2
 #define Rw_pin  1
@@ -32,37 +38,57 @@ DS1302RTC RTC(13, 12, 11);
 #define D5_pin  5
 #define D6_pin  6
 #define D7_pin  7
-
 LiquidCrystal_I2C	lcd(I2C_ADDR,En_pin,Rw_pin,Rs_pin,D4_pin,D5_pin,D6_pin,D7_pin);
 
-int setMode = 0;
-int tmpMillis = 0;
-time_t lastTime;
+// Variables
+int setMode = 0; // Mode de changement / Changing mode
+int tmpMillis = 0;  // Variable de compte millis / count millis variable
+time_t lastTime;  // Enregistrement de l'heure actuel / save actual time
+
+// Sauvegarde etat des boutons
+// Save status buttons.
 char buttonMode;
 char buttonAdd;
 char buttonSub;
 char buttonLight;
 
+// Tableau des jours de la semaine
+// Days of the week array
 String jourSem[8] = {"","DIM", "LUN","MAR","MER","JEU","VEN","SAM"};
+
+// Tableau des differents mode
+// Array of the modes
 String mode[7] = {" ","h","m","J","M","A", "W"};
+
+// Preparation des objets
+// Object instencehiate
 time_t thisTime;
 tmElements_t tm;
 
 
-// Initialisation des variables de Lecture Temperature
+// Initialisation des variables de Lecture Temperature/humidite
+// Initiate variable for temp/humidity reading
 dht11 DHT11;
 #define DHT11PIN 3
 
 
 /*
- Now we need a LedControl to work with.
- ***** These pin numbers will probably not work with your hardware *****
- pin 12 is connected to the DataIn 
- pin 11 is connected to the CLK 
- pin 10 is connected to LOAD 
+ Init LedControl Matrix
+ pin 5 connecte a DataIn 
+ pin 10 connecte a CLK 
+ pin 9 connecte a LOAD 
  We have only a single MAX72XX.
- */
+*/
+/*
+ Init LedControl Matrix
+ pin 5 is connected to the DataIn 
+ pin 10 is connected to the CLK 
+ pin 9 is connected to LOAD 
+ We have only a single MAX72XX.
+*/
 LedControl lc=LedControl(5,10,9,1);
+// Tableau des nombre binaire de 0 a 9
+// Array of binary number from 0 to 9
 byte chiffres[10]={B00000000,
                    B00000001,
                    B00000010,
@@ -74,6 +100,8 @@ byte chiffres[10]={B00000000,
                    B00001000,
                    B00001001};
 
+// Variable compte temps pour eteindre LCD
+// Timer variable for turning off LCD
 int timerLcdLight;
 
 void setup()
@@ -272,15 +300,15 @@ void displayLCD(){
 
 // Display Matrix
 void displayMatrix(){
-  int heures;
-  int minutes;
-  int secondes;
-  int dizaines;
-  int unites;
+  int heures, minutes, secondes, jour, mois, annee, dizaines, unites;
   
   heures = tm.Hour;
   minutes = tm.Minute;
   secondes = tm.Second;
+  
+  jour = tm.Day;
+  mois = tm.Month;
+  annee = tm.Year;
   
   dizaines = heures % 10;
   unites = heures / 10;
@@ -301,7 +329,32 @@ void displayMatrix(){
 
   lc.setRow(0,0,chiffres[dizaines]);
   lc.setRow(0,1,chiffres[unites]);
+  
+  // Ajout d'une seconde matrix pour la date
+  // Code a ajouter
 
+/*
+  dizaines = jour % 10;
+  unites = jour / 10;
+  
+  lc.setRow(1,7,chiffres[unites]);  
+  lc.setRow(1,6,chiffres[dizaines]);
+  lc.setRow(1,5,chiffres[0]);
+
+
+  dizaines = mois % 10;
+  unites = mois / 10;
+
+  lc.setRow(1,4,chiffres[unites]);
+  lc.setRow(1,3,chiffres[dizaines]);
+  lc.setRow(1,2,chiffres[0]);
+
+  dizaines = annee % 10;
+  unites = annee / 10;
+
+  lc.setRow(1,0,chiffres[dizaines]);
+  lc.setRow(1,1,chiffres[unites]);
+*/
 }
 
 // Si ecran LCD off allume et reset timer
