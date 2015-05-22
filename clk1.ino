@@ -106,29 +106,36 @@ int timerLcdLight;
 
 void setup()
 {
-  // Setting up buttons
+  // Configuration des entrees boutons et sortis LCD
+  // Setting up input buttons and output LCD
   pinMode(PIN_SET_MODE_BUTTON,INPUT);
   pinMode(PIN_ADD_BUTTON,INPUT);
   pinMode(PIN_SUB_BUTTON,INPUT);
   pinMode(PIN_LCD_LIGHT,INPUT);
   
+  // Activation de resistances puul-up interne
   // Enable the build-in pull-up resistor
   digitalWrite(PIN_SET_MODE_BUTTON,HIGH);
   digitalWrite(PIN_ADD_BUTTON,HIGH);
   digitalWrite(PIN_SUB_BUTTON,HIGH);
   digitalWrite(PIN_LCD_LIGHT,HIGH);
   
-  //LCD 
+  // Activation du LCD
+  // Enabling LCD
   lcd.begin (16,2); //  <<----- My LCD was 16x2
+  // Active le backlight
   // Switch on the backlight
   lcd.setBacklightPin(BACKLIGHT_PIN,POSITIVE);
   lcd.setBacklight(HIGH);
   lcd.home (); // go home
   lcd.clear();
 
+  // Configuration de la communication serie
   // Setup Serial connection
   Serial.begin(115200);
   
+  // Test de l'horloge
+  // Test clock
   Serial.println("DS1302RTC Read Test");
   Serial.println("-------------------");
   
@@ -152,8 +159,6 @@ void setup()
     Serial.println("The DS1302 is write protected. This normal.");
     Serial.println();
   }
-  
-  delay(5000);
 
   lastTime = 0;
 
