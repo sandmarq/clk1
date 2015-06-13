@@ -86,7 +86,7 @@ dht11 DHT11;
  pin 9 is connected to LOAD 
  We have only a single MAX72XX.
 */
-LedControl lc=LedControl(5,10,9,1);
+LedControl lc=LedControl(5,10,9,2);
 // Tableau des nombre binaire de 0 a 9
 // Array of binary number from 0 to 9
 byte chiffres[10]={B00000000,
@@ -150,6 +150,8 @@ void setup()
   Serial.println();
   delay(500);
   
+// Test de présence et fonctionnement du RTC
+// Test avaiblity and fonction of the RTC
   if (RTC.haltRTC()) {
     Serial.println("The DS1302 is stopped.  Please run the SetTime");
     Serial.println("example to initialize the time and begin running.");
@@ -160,14 +162,14 @@ void setup()
     Serial.println();
   }
 
+// Init variables
   lastTime = 0;
-
   buttonMode = HIGH;
   buttonAdd = HIGH;
   buttonSub = HIGH;
   buttonLight = HIGH;
   timerLcdLight = 120;
-  
+
   analogReference(INTERNAL);
   
   /*
@@ -211,7 +213,10 @@ void loop()
 // Affichage des infos
 void displayTime(){
   displaySerial();
-  displayLCD();
+  //affice sur lcd si actif
+  if (timerLcdLight != 0){
+    displayLCD();
+  }
   displayMatrix();
 }
 
@@ -338,7 +343,6 @@ void displayMatrix(){
   // Ajout d'une seconde matrix pour la date
   // Code a ajouter
 
-/*
   dizaines = jour % 10;
   unites = jour / 10;
   
@@ -359,7 +363,7 @@ void displayMatrix(){
 
   lc.setRow(1,0,chiffres[dizaines]);
   lc.setRow(1,1,chiffres[unites]);
-*/
+
 }
 
 // Si ecran LCD off allume et reset timer
